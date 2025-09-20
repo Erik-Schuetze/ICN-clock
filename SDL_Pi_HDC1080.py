@@ -1,16 +1,3 @@
-
-#
-# SDL_Pi_HDC1080
-# Python 3
-# Raspberry Pi Driver for the SwitchDoc Labs HDC1080 Breakout Board
-#
-# SwitchDoc Labs
-# December 2018
-#
-# Version 1.1
-
-#constants
-
 # I2C Address
 HDC1080_ADDRESS =                       (0x40)    # 1000000 
 # Registers
