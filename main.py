@@ -22,22 +22,23 @@ def update_departures():
     
     # Create new labels
     y_offset = 65
+    departure_font_size = 37
     for dep in departures:
         if dep['line'] in LINES_TO_SHOW:
             # Create line and direction label
-            line_label = tk.Label(root, text=dep['line'], font=("Piboto Light", 40), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
-            line_label.place(x=screen_width-435, y=y_offset, anchor="e")
+            line_label = tk.Label(root, text=dep['line'], font=("Piboto Light", departure_font_size), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
+            line_label.place(x=screen_width-440, y=y_offset, anchor="e")
             departure_labels.append(line_label)
-            direction_label = tk.Label(root, text=dep['direction'], font=("Piboto Thin", 40), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
-            direction_label.place(x=screen_width-420, y=y_offset, anchor="w")
+            direction_label = tk.Label(root, text=dep['direction'], font=("Piboto Thin", departure_font_size), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
+            direction_label.place(x=screen_width-425, y=y_offset, anchor="w")
             departure_labels.append(direction_label)
             
             # Create arrival time label with different style
-            time_label = tk.Label(root, text=f"{dep['arrival']}m", font=("Piboto", 40), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
+            time_label = tk.Label(root, text=f"{dep['arrival']}m", font=("Piboto", departure_font_size), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
             time_label.place(x=screen_width-40, y=y_offset, anchor="e")
             departure_labels.append(time_label)
             
-            y_offset += 75  # Adjust spacing between departure rows
+            y_offset += 65  # Adjust spacing between departure rows
     
     # Schedule next update
     root.after(DEPARTURE_UPDATE_INTERVAL, update_departures)  # Update every 30 seconds
@@ -78,19 +79,12 @@ def get_outside_temp():
         return None
     return None
 
-def update_inside_temperature():
+def update_temperature():
     inside_temp = hdc1080.readTemperature()
-    in_temp_label.config(text=f"{inside_temp:.0f}°C")
-
-    root.after(TEMP_UPDATE_INTERVAL, update_inside_temperature)
-
-def update_outside_temperature():
-    outside_temp = get_outside_temp()
-    if outside_temp is not None:
-        out_temp_label.config(text=f"{outside_temp:.0f}°C")
-    else:
-        out_temp_label.config(text="N/A")
-    root.after(WEATHER_UPDATE_INTERVAL, update_outside_temperature)
+    inside_hum = hdc1080.readHumidity()
+    temp_label.config(text=f"{inside_temp:.1f}°C")
+    hum_label.config(text=f"{inside_hum:.1f}%")
+    root.after(TEMP_UPDATE_INTERVAL, update_temperature)
 
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
@@ -99,17 +93,17 @@ root.configure(bg="white")
 root.attributes("-fullscreen", True)
 
 # Create labels with specific positions
-hour_label = tk.Label(root, font=("Piboto Light", 370), bg="white", fg="black")
-hour_label.place(x=30, y=screen_height/2-150, anchor="w")
+hour_label = tk.Label(root, font=("Piboto Light", 350), bg="white", fg="black")
+hour_label.place(x=20, y=screen_height/2-160, anchor="w")
 
-colon_label = tk.Label(root, text=":", font=("Piboto Light", 370), bg="white", fg="black")
+colon_label = tk.Label(root, text=":", font=("Piboto Light", 350), bg="white", fg="black")
 colon_label.place(x=30+screen_width/3, y=screen_height/2-150, anchor="e")
 
-minute_label = tk.Label(root, font=("Piboto Light", 370), bg="white", fg="black")
+minute_label = tk.Label(root, font=("Piboto Light", 350), bg="white", fg="black")
 minute_label.place(x=30+screen_width/3, y=screen_height/2-150, anchor="w")
 
-second_label = tk.Label(root, font=("Piboto Light", 80), bg="white", fg="black")
-second_label.place(x=30+screen_width/3*2-80, y=screen_height/2, anchor="w")
+second_label = tk.Label(root, font=("Piboto Light", 70), bg="white", fg="black")
+second_label.place(x=30+screen_width/3*2-90, y=screen_height/2, anchor="w")
 
 year_label = tk.Label(root, font=("Piboto Light", 50), bg="white", fg="black")
 year_label.place(x=screen_width/6-30, y=screen_height/6*5, anchor="center")
@@ -120,24 +114,15 @@ month_label.place(x=screen_width/6*2-30, y=screen_height/6*5, anchor="center")
 day_label = tk.Label(root, font=("Nunito Light", 50), bg="white", fg="black")
 day_label.place(x=screen_width/6*3-30, y=screen_height/6*5, anchor="center")
 
-in_temp_label = tk.Label(root, font=("Piboto Light", 40), bg="white", fg="black")
-in_temp_label.place(x=screen_width-160, y=screen_height-105, anchor="sw")
+temp_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
+temp_label.place(x=screen_width-420, y=screen_height-30, anchor="sw")
 
-in_temp2_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
-in_temp2_label.place(x=screen_width-160, y=screen_height-105, anchor="se")
-in_temp2_label.config(text=f"INSIDE: ")
-
-out_temp_label = tk.Label(root, font=("Piboto Light", 40), bg="white", fg="black")
-out_temp_label.place(x=screen_width-160, y=screen_height-30, anchor="sw")
-
-out_temp2_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
-out_temp2_label.place(x=screen_width-160, y=screen_height-30, anchor="se")
-out_temp2_label.config(text=f"OUTSIDE: ")
+hum_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
+hum_label.place(x=screen_width-30, y=screen_height-30, anchor="se")
 
 update_clock()
 update_departures()
-update_inside_temperature()
-update_outside_temperature()
+update_temperature()
 root.mainloop()
 
 
