@@ -22,7 +22,8 @@ def update_departures():
     
     # Create new labels
     y_offset = 65
-    departure_font_size = 37
+    line_spacing = 70
+    departure_font_size = 40
     for dep in departures:
         if dep['line'] in LINES_TO_SHOW:
             # Create line and direction label
@@ -38,7 +39,7 @@ def update_departures():
             time_label.place(x=screen_width-40, y=y_offset, anchor="e")
             departure_labels.append(time_label)
             
-            y_offset += 65  # Adjust spacing between departure rows
+            y_offset += line_spacing  # Adjust spacing between departure rows
     
     # Schedule next update
     root.after(DEPARTURE_UPDATE_INTERVAL, update_departures)  # Update every 30 seconds
@@ -123,20 +124,8 @@ def update_temperature():
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-
-# Add these lines to prevent exiting fullscreen
-root.overrideredirect(True)  # Removes window decorations and prevents window controls
 root.configure(bg="white")
-
-# Bind escape key to a do-nothing function to prevent default escape behavior
-def do_nothing(event):
-    return "break"
-root.bind('<Escape>', do_nothing)
-
-# Optional: Add a way to properly exit the application if needed
-def quit_app(event):
-    root.quit()
-root.bind('<Control-q>', quit_app)  # Now Ctrl+Q will quit the app
+root.attributes("-fullscreen", True)
 
 # Create labels with specific positions
 hour_label = tk.Label(root, font=("Piboto Light", 350), bg="white", fg="black")
