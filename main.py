@@ -123,8 +123,20 @@ def update_temperature():
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
+
+# Add these lines to prevent exiting fullscreen
+root.overrideredirect(True)  # Removes window decorations and prevents window controls
 root.configure(bg="white")
-root.attributes("-fullscreen", True)
+
+# Bind escape key to a do-nothing function to prevent default escape behavior
+def do_nothing(event):
+    return "break"
+root.bind('<Escape>', do_nothing)
+
+# Optional: Add a way to properly exit the application if needed
+def quit_app(event):
+    root.quit()
+root.bind('<Control-q>', quit_app)  # Now Ctrl+Q will quit the app
 
 # Create labels with specific positions
 hour_label = tk.Label(root, font=("Piboto Light", 350), bg="white", fg="black")
