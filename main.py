@@ -8,7 +8,15 @@ from config import *
 
 os.environ['DISPLAY'] = DISPLAY
 
-hdc1080 = SDL_Pi_HDC1080.SDL_Pi_HDC1080()
+# Initialize sensor with error handling
+try:
+    hdc1080 = SDL_Pi_HDC1080.SDL_Pi_HDC1080()
+    sensor_available = True
+except OSError as e:
+    print(f"Failed to initialize temperature sensor: {e}")
+    hdc1080 = None
+    sensor_available = False
+
 departure_labels = []
 
 def update_departures():
@@ -115,10 +123,23 @@ def update_clock():
     root.after(1000, update_clock)
 
 def update_temperature():
-    inside_temp = hdc1080.readTemperature()
-    inside_hum = hdc1080.readHumidity()
-    temp_label.config(text=f"{inside_temp:.1f}°C")
-    hum_label.config(text=f"{inside_hum:.1f}%")
+    if not sensor_available:
+        # Skip sensor reading if initialization failed
+        temp_label.config(text="")
+        hum_label.config(text="")
+        root.after(TEMP_UPDATE_INTERVAL, update_temperature)
+        return
+
+    try:
+        inside_temp = hdc1080.readTemperature()
+        inside_hum = hdc1080.readHumidity()
+        temp_label.config(text=f"{inside_temp:.1f}°C")
+        hum_label.config(text=f"{inside_hum:.1f}%")
+    except Exception as e:
+        temp_label.config(text="")
+        hum_label.config(text="")
+        print(f"Temperature sensor error: {e}")
+    
     root.after(TEMP_UPDATE_INTERVAL, update_temperature)
 
 root = tk.Tk()
