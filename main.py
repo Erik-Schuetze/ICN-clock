@@ -3,7 +3,6 @@ import os
 import time
 import SDL_Pi_HDC1080
 import dvb
-import requests
 from config import *
 
 os.environ['DISPLAY'] = DISPLAY
@@ -29,7 +28,7 @@ def update_departures():
     departures = dvb.monitor(STATION, TIME_OFFSET, NUM_RESULTS, CITY)
     
     # Create new labels
-    y_offset = 65
+    y_offset = 70
     line_spacing = 70
     departure_font_size = 40
     for dep in departures:
@@ -38,7 +37,7 @@ def update_departures():
             line_label = tk.Label(root, text=dep['line'], font=("Piboto Light", departure_font_size), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
             line_label.place(x=screen_width-440, y=y_offset, anchor="e")
             departure_labels.append(line_label)
-            direction_label = tk.Label(root, text=dep['direction'], font=("Piboto Thin", departure_font_size), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
+            direction_label = tk.Label(root, text=dep['direction'], font=("Piboto Thin", departure_font_size-5), bg=BACKGROUND_COLOR, fg=FONT_COLOR)
             direction_label.place(x=screen_width-425, y=y_offset, anchor="w")
             departure_labels.append(direction_label)
             
@@ -47,10 +46,10 @@ def update_departures():
             time_label.place(x=screen_width-40, y=y_offset, anchor="e")
             departure_labels.append(time_label)
             
-            y_offset += line_spacing  # Adjust spacing between departure rows
+            y_offset += line_spacing
     
     # Schedule next update
-    root.after(DEPARTURE_UPDATE_INTERVAL, update_departures)  # Update every 30 seconds
+    root.after(DEPARTURE_UPDATE_INTERVAL, update_departures)
 
 def create_date_labels():
     """Create and return labels for date display"""
@@ -146,7 +145,19 @@ root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 root.configure(bg="white")
-root.attributes("-fullscreen", True)
+# replace immediate fullscreen with a guarded delayed call
+def ensure_fullscreen(retries=5, delay_ms=1000):
+    try:
+        root.update_idletasks()
+        root.attributes("-fullscreen", True)
+        # verify: if window still small, try again
+        if root.winfo_width() < screen_width - 50 and retries > 0:
+            root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
+    except Exception:
+        if retries > 0:
+            root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
+
+ensure_fullscreen()
 
 # Create labels with specific positions
 hour_label = tk.Label(root, font=("Piboto Light", 350), bg="white", fg="black")
