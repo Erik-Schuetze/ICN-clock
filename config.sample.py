@@ -11,8 +11,6 @@ LINES_TO_SHOW = ['1', '2']  # Lines you want to monitor
 TIME_OFFSET = 0
 NUM_RESULTS = 10
 
-# Weather settings
-WEATHER_CITY = 'Your City'
-WEATHER_UPDATE_INTERVAL = 300000
-TEMP_UPDATE_INTERVAL = 60000
+# Temperature and humidity sensor settings
+TEMP_UPDATE_INTERVAL = 5000
 DEPARTURE_UPDATE_INTERVAL = 120000
