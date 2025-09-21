@@ -68,17 +68,6 @@ def update_clock():
     
     root.after(1000, update_clock)
 
-def get_outside_temp():
-    try:
-        response = requests.get(f'https://wttr.in/{WEATHER_CITY}?format=%t')
-        if response.status_code == 200:
-            # Remove plus sign and convert to float
-            temp_str = response.text.strip().replace('+', '').replace('°C', '')
-            return float(temp_str)
-    except:
-        return None
-    return None
-
 def update_temperature():
     inside_temp = hdc1080.readTemperature()
     inside_hum = hdc1080.readHumidity()
