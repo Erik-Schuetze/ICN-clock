@@ -121,25 +121,29 @@ def update_clock():
     
     root.after(1000, update_clock)
 
-def update_temperature():
+def update_air_data():
     if not sensor_available:
         # Skip sensor reading if initialization failed
-        temp_label.config(text="")
-        hum_label.config(text="")
-        root.after(TEMP_UPDATE_INTERVAL, update_temperature)
+        temp_label.config(text="00°C")
+        hum_label.config(text="00%")
+        co2_label.config(text="0000ppm")
+        root.after(TEMP_UPDATE_INTERVAL, update_air_data)
         return
 
     try:
         inside_temp = hdc1080.readTemperature()
         inside_hum = hdc1080.readHumidity()
+        inside_co2 = 0  # Placeholder for CO2 value
         temp_label.config(text=f"{inside_temp:.1f}°C")
         hum_label.config(text=f"{inside_hum:.1f}%")
+        hum_label.config(text=f"{inside_co2:.0f}ppm")
     except Exception as e:
-        temp_label.config(text="")
-        hum_label.config(text="")
+        temp_label.config(text="00°C")
+        hum_label.config(text="00%")
+        co2_label.config(text="0000ppm")
         print(f"Temperature sensor error: {e}")
     
-    root.after(TEMP_UPDATE_INTERVAL, update_temperature)
+    root.after(TEMP_UPDATE_INTERVAL, update_air_data)
 
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
@@ -176,14 +180,17 @@ second_label.place(x=30+screen_width/3*2-90, y=screen_height/2, anchor="w")
 date_labels = create_date_labels()
 
 temp_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
-temp_label.place(x=screen_width-420, y=screen_height-30, anchor="sw")
+temp_label.place(x=screen_width/6*4.5-30, y=screen_height/5*4+50, anchor="center")
 
 hum_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
-hum_label.place(x=screen_width-30, y=screen_height-30, anchor="se")
+hum_label.place(x=screen_width/6*5-30, y=screen_height/5*4+50, anchor="center")
+
+co2_label = tk.Label(root, font=("Piboto Thin", 40), bg="white", fg="black")
+co2_label.place(x=screen_width/6*5.6-30, y=screen_height/5*4+50, anchor="center")
 
 update_clock()
 update_departures()
-update_temperature()
+update_air_data()
 root.mainloop()
 
 
