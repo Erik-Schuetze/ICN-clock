@@ -27,7 +27,7 @@ def update_departures():
     departure_labels.clear()
     
     # Get new departures
-    departures = dvb.monitor(STATION, TIME_OFFSET, NUM_RESULTS, CITY)
+    departures = dvb.monitor(STATION, TIME_OFFSET, NUM_RESULTS, CITY)[:7]
     
     # Create new labels
     y_offset = 70
