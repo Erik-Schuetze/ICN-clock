@@ -1,8 +1,8 @@
 # Copy this file to config.py and adjust values
 DISPLAY = ':0'
 FULLSCREEN = True
-BACKGROUND_COLOR = "white"
-FONT_COLOR = "black"
+SUNSET = 22
+SUNRISE = 6
 
 # Transport settings
 STATION = 'Your Station Name'

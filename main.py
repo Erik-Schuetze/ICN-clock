@@ -76,13 +76,11 @@ def create_date_labels():
     divider1 = tk.Canvas(root, width=2, height=divider_height, bg=bg_color, highlightthickness=0)
     divider1.create_line(1, 0, 1, divider_height, fill=fg_color, width=2)
     divider1.place(x=screen_width/6*1.5-30-20, y=divider_y)
-    date_labels['divider1'] = divider1
 
     # Second divider (between month and day)
     divider2 = tk.Canvas(root, width=2, height=divider_height, bg=bg_color, highlightthickness=0)
     divider2.create_line(1, 0, 1, divider_height, fill=fg_color, width=2)
     divider2.place(x=screen_width/6*2.5-30+30, y=divider_y)
-    date_labels['divider2'] = divider2
     
     # Position header labels
     date_labels['year_header'].place(x=screen_width/6-30, y=screen_height/5*4-date_font_size, anchor="center")
@@ -147,6 +145,41 @@ def update_air_data():
     
     root.after(TEMP_UPDATE_INTERVAL, update_air_data)
 
+def update_color_scheme():
+    hour = time.strftime("%H")
+    # Flash the colon
+    if int(hour)< SUNSET and int(hour) >= SUNRISE:
+        fg_color = "black"
+        bg_color = "white"
+        root.configure(bg=bg_color)
+        hour_label.configure(bg=bg_color, fg=fg_color)
+        minute_label.configure(bg=bg_color, fg=fg_color)
+        second_label.configure(bg=bg_color, fg=fg_color)
+        colon_label.configure(bg=bg_color, fg=fg_color)
+        temp_label.configure(bg=bg_color, fg=fg_color)
+        hum_label.configure(bg=bg_color, fg=fg_color)
+        co2_label.configure(bg=bg_color, fg=fg_color)
+        for label in departure_labels:
+            label.configure(bg=bg_color, fg=fg_color)
+        for key, label in date_labels.items():
+            label.configure(bg=bg_color, fg=fg_color)
+    else:
+        fg_color = "white"
+        bg_color = "black"
+        root.configure(bg=bg_color)
+        hour_label.configure(bg=bg_color, fg=fg_color)
+        minute_label.configure(bg=bg_color, fg=fg_color)
+        second_label.configure(bg=bg_color, fg=fg_color)
+        colon_label.configure(bg=bg_color, fg=fg_color)
+        temp_label.configure(bg=bg_color, fg=fg_color)
+        hum_label.configure(bg=bg_color, fg=fg_color)
+        co2_label.configure(bg=bg_color, fg=fg_color)
+        for label in departure_labels:
+            label.configure(bg=bg_color, fg=fg_color)
+        for key, label in date_labels.items():
+            label.configure(bg=bg_color, fg=fg_color)
+    root.after(900000, update_color_scheme)
+
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -193,6 +226,7 @@ co2_label.place(x=screen_width/6*5.6-30, y=screen_height/5*4+50, anchor="center"
 update_clock()
 update_departures()
 update_air_data()
+update_color_scheme()
 root.mainloop()
 
 
