@@ -6,8 +6,6 @@ import dvb
 from config import *
 
 os.environ['DISPLAY'] = DISPLAY
-bg_color = "black"
-fg_color = "white"
 
 # Initialize sensor with error handling
 try:
@@ -145,44 +143,36 @@ def update_air_data():
     
     root.after(TEMP_UPDATE_INTERVAL, update_air_data)
 
-def update_color_scheme():
+def get_color_scheme():
     hour = time.strftime("%H")
-    # Flash the colon
     if int(hour)< SUNSET and int(hour) >= SUNRISE:
         fg_color = "black"
         bg_color = "white"
-        root.configure(bg=bg_color)
-        hour_label.configure(bg=bg_color, fg=fg_color)
-        minute_label.configure(bg=bg_color, fg=fg_color)
-        second_label.configure(bg=bg_color, fg=fg_color)
-        colon_label.configure(bg=bg_color, fg=fg_color)
-        temp_label.configure(bg=bg_color, fg=fg_color)
-        hum_label.configure(bg=bg_color, fg=fg_color)
-        co2_label.configure(bg=bg_color, fg=fg_color)
-        for label in departure_labels:
-            label.configure(bg=bg_color, fg=fg_color)
-        for key, label in date_labels.items():
-            label.configure(bg=bg_color, fg=fg_color)
     else:
         fg_color = "white"
         bg_color = "black"
-        root.configure(bg=bg_color)
-        hour_label.configure(bg=bg_color, fg=fg_color)
-        minute_label.configure(bg=bg_color, fg=fg_color)
-        second_label.configure(bg=bg_color, fg=fg_color)
-        colon_label.configure(bg=bg_color, fg=fg_color)
-        temp_label.configure(bg=bg_color, fg=fg_color)
-        hum_label.configure(bg=bg_color, fg=fg_color)
-        co2_label.configure(bg=bg_color, fg=fg_color)
-        for label in departure_labels:
-            label.configure(bg=bg_color, fg=fg_color)
-        for key, label in date_labels.items():
-            label.configure(bg=bg_color, fg=fg_color)
+    return fg_color, bg_color
+
+def update_color_scheme():
+    fg_color, bg_color = get_color_scheme()
+    root.configure(bg=bg_color)
+    hour_label.configure(bg=bg_color, fg=fg_color)
+    minute_label.configure(bg=bg_color, fg=fg_color)
+    second_label.configure(bg=bg_color, fg=fg_color)
+    colon_label.configure(bg=bg_color, fg=fg_color)
+    temp_label.configure(bg=bg_color, fg=fg_color)
+    hum_label.configure(bg=bg_color, fg=fg_color)
+    co2_label.configure(bg=bg_color, fg=fg_color)
+    for label in departure_labels:
+        label.configure(bg=bg_color, fg=fg_color)
+    for key, label in date_labels.items():
+        label.configure(bg=bg_color, fg=fg_color)
     root.after(900000, update_color_scheme)
 
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
+fg_color, bg_color = get_color_scheme()
 root.configure(bg=bg_color)
 # replace immediate fullscreen with a guarded delayed call
 def ensure_fullscreen(retries=5, delay_ms=1000):
