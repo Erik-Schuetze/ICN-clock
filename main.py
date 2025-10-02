@@ -8,8 +8,6 @@ from config import *
 
 os.environ['DISPLAY'] = DISPLAY
 
-
-
 # Initialize sensor with error handling
 try:
     # Initialize I²C bus (bus=1 is default on Pi) using the library's transceiver adapter
