@@ -1,19 +1,33 @@
 import tkinter as tk
 import os
 import time
-import SDL_Pi_HDC1080
+from sensirion_i2c_driver import I2cConnection, LinuxI2cTransceiver
+from sensirion_i2c_scd import Scd4xI2cDevice
 import dvb
 from config import *
 
 os.environ['DISPLAY'] = DISPLAY
 
+
+
 # Initialize sensor with error handling
 try:
-    hdc1080 = SDL_Pi_HDC1080.SDL_Pi_HDC1080()
+    # Initialize I²C bus (bus=1 is default on Pi) using the library's transceiver adapter
+    transceiver = LinuxI2cTransceiver("/dev/i2c-1")
+    i2c = I2cConnection(transceiver)
+    scd4x = Scd4xI2cDevice(i2c)
+
+    scd4x.stop_periodic_measurement()
+    scd4x.reinit()
+    time.sleep(5)
+
+    scd4x.start_periodic_measurement()
+    time.sleep(5)
+
     sensor_available = True
 except OSError as e:
     print(f"Failed to initialize temperature sensor: {e}")
-    hdc1080 = None
+    scd4x = None
     sensor_available = False
 
 departure_labels = []
@@ -129,12 +143,10 @@ def update_air_data():
         return
 
     try:
-        inside_temp = hdc1080.readTemperature()
-        inside_hum = hdc1080.readHumidity()
-        inside_co2 = 0  # Placeholder for CO2 value
-        temp_label.config(text=f"{inside_temp:.1f}°C")
-        hum_label.config(text=f"{inside_hum:.1f}%")
-        hum_label.config(text=f"{inside_co2:.0f}ppm")
+        co2, temp, rh = scd4x.read_measurement()
+        temp_label.config(text=f"{temp.degrees_celsius:.0f}°C")
+        hum_label.config(text=f"{rh.percent_rh:.0f}%")
+        co2_label.config(text=f"{co2.co2}ppm")
     except Exception as e:
         temp_label.config(text="00°C")
         hum_label.config(text="00%")
