@@ -38,6 +38,9 @@ def update_departures():
     
     # Get new departures
     departures = dvb.monitor(STATION, TIME_OFFSET, NUM_RESULTS, CITY)[:7]
+
+    # get current color scheme inside recurring function:
+    fg_color, bg_color = get_color_scheme()
     
     # Create new labels
     y_offset = 70
