@@ -1,8 +1,12 @@
 import tkinter as tk
 import os
 import time
-from sensirion_i2c_driver import I2cConnection, LinuxI2cTransceiver
-from sensirion_i2c_scd import Scd4xI2cDevice
+import sys
+
+# Add lib directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
+
+from sensor_wrapper import I2cConnection, LinuxI2cTransceiver, Scd4xI2cDevice
 import dvb
 from config import *
 
@@ -183,23 +187,38 @@ def update_color_scheme():
     root.after(900000, update_color_scheme)
 
 root = tk.Tk()
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
+
+# Handle window sizing based on configuration
+if FULLSCREEN:
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+else:
+    # Use custom window size if specified, otherwise use screen size
+    screen_width = getattr(sys.modules['config'], 'WINDOW_WIDTH', root.winfo_screenwidth())
+    screen_height = getattr(sys.modules['config'], 'WINDOW_HEIGHT', root.winfo_screenheight())
+    root.geometry(f"{screen_width}x{screen_height}")
+
 fg_color, bg_color = get_color_scheme()
 root.configure(bg=bg_color)
-# replace immediate fullscreen with a guarded delayed call
-def ensure_fullscreen(retries=5, delay_ms=1000):
-    try:
-        root.update_idletasks()
-        root.attributes("-fullscreen", True)
-        # verify: if window still small, try again
-        if root.winfo_width() < screen_width - 50 and retries > 0:
-            root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
-    except Exception:
-        if retries > 0:
-            root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
 
-ensure_fullscreen()
+# Only go fullscreen if configured
+if FULLSCREEN:
+    # replace immediate fullscreen with a guarded delayed call
+    def ensure_fullscreen(retries=5, delay_ms=1000):
+        try:
+            root.update_idletasks()
+            root.attributes("-fullscreen", True)
+            # verify: if window still small, try again
+            if root.winfo_width() < screen_width - 50 and retries > 0:
+                root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
+        except Exception:
+            if retries > 0:
+                root.after(delay_ms, lambda: ensure_fullscreen(retries-1, delay_ms))
+
+    ensure_fullscreen()
+else:
+    # Windowed mode - set title for easier window management
+    root.title("ICN Clock - Test Mode")
 
 # Create labels with specific positions
 hour_label = tk.Label(root, font=("Piboto Light", 350), bg=bg_color, fg=fg_color)
