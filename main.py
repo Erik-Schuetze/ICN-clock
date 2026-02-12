@@ -291,16 +291,16 @@ second_label.place(x=40+screen_width/3*2-80, y=screen_height/2, anchor="w")
 # Create date labels
 date_labels = create_date_labels()
 
-temp_label = tk.Label(root, font=("Piboto Thin", 40), bg=bg_color, fg=fg_color)
+temp_label = tk.Label(root, font=("Piboto Thin", 50), bg=bg_color, fg=fg_color)
 temp_label.place(x=screen_width-40, y=screen_height/5*1, anchor="e")
 
-hum_label = tk.Label(root, font=("Piboto Thin", 40), bg=bg_color, fg=fg_color)
+hum_label = tk.Label(root, font=("Piboto Thin", 50), bg=bg_color, fg=fg_color)
 hum_label.place(x=screen_width-40, y=screen_height/5*2, anchor="e")
 
-co2_label = tk.Label(root, font=("Piboto Thin", 40), bg=bg_color, fg=fg_color)
+co2_label = tk.Label(root, font=("Piboto Thin", 50), bg=bg_color, fg=fg_color)
 co2_label.place(x=screen_width-40, y=screen_height/5*3, anchor="e")
 
-outdoor_temp_label = tk.Label(root, font=("Piboto Thin", 40), bg=bg_color, fg=fg_color)
+outdoor_temp_label = tk.Label(root, font=("Piboto Thin", 50), bg=bg_color, fg=fg_color)
 outdoor_temp_label.place(x=screen_width-40, y=screen_height/5*4, anchor="e")
 
 update_clock()
