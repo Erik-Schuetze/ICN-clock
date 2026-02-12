@@ -15,21 +15,58 @@ os.environ['DISPLAY'] = DISPLAY
 
 # Global variables for weather and sunrise/sunset
 outdoor_temp = None
+weather_code = None
 sunrise_hour = 6  # Default fallback values
 sunset_hour = 22
 
+def get_weather_icon(weather_code):
+    """Map weather code to unicode icon
+    Weather codes from Open-Meteo API:
+    0: Clear sky
+    1-3: Mainly clear, partly cloudy, and overcast
+    45, 48: Fog
+    51-67: Rain (drizzle, rain, freezing rain)
+    71-77, 85-86: Snow
+    80-82: Rain showers
+    95-99: Thunderstorm
+    """
+    if weather_code is None:
+        return ""
+
+    # Thunderstorm
+    if weather_code >= 95:
+        return "⛈"
+    # Rainy (including showers, drizzle, freezing rain)
+    elif weather_code >= 51 and weather_code <= 67:
+        return "⛆"
+    elif weather_code >= 80 and weather_code <= 82:
+        return "⛆"
+    # Snow
+    elif weather_code >= 71 and weather_code <= 77:
+        return "❄"
+    elif weather_code >= 85 and weather_code <= 86:
+        return "❄"
+    # Cloudy (overcast, fog)
+    elif weather_code >= 2 or weather_code >= 45:
+        return "☁"
+    # Clear/Sunny
+    else:
+        return "☀"
+
 def fetch_weather():
-    """Fetch current outdoor temperature from Open-Meteo API"""
-    global outdoor_temp
+    """Fetch current outdoor temperature and weather condition from Open-Meteo API"""
+    global outdoor_temp, weather_code
     try:
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&current=temperature_2m"
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&current=temperature_2m,weather_code"
         response = requests.get(url, timeout=10)
         data = response.json()
         outdoor_temp = data['current']['temperature_2m']
-        print(f"Updated outdoor temperature: {outdoor_temp}°C")
+        weather_code = data['current']['weather_code']
+        print(f"Updated outdoor temperature: {outdoor_temp}°C, weather code: {weather_code}")
     except Exception as e:
         print(f"Failed to fetch weather: {e}")
         outdoor_temp = None
+        weather_code = None
 
 def fetch_sunrise_sunset():
     """Fetch sunrise and sunset times from Open-Meteo API"""
@@ -167,7 +204,8 @@ def update_outdoor_temp():
     """Update outdoor temperature display"""
     fetch_weather()
     if outdoor_temp is not None:
-        outdoor_temp_label.config(text=f"{outdoor_temp:.0f}°C")
+        weather_icon = get_weather_icon(weather_code)
+        outdoor_temp_label.config(text=f"{weather_icon} {outdoor_temp:.0f}°C")
     else:
         outdoor_temp_label.config(text="--°C")
 
