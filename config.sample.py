@@ -15,6 +15,9 @@ LONGITUDE = 13.7373  # Dresden, Germany (adjust to your city)
 # Mock mode for testing on non-Raspberry Pi systems
 MOCK_MODE = False  # Set to True to use mock sensor data
 
+# Debug settings
+DEBUG_PRINT = True  # Enable/disable debug print statements
+
 # Update intervals (in milliseconds)
 TEMP_UPDATE_INTERVAL = 10000     # Indoor sensor update interval
 WEATHER_UPDATE_INTERVAL = 600000  # Outdoor weather update interval (10 minutes)

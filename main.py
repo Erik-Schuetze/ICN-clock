@@ -13,6 +13,11 @@ from config import *
 
 os.environ['DISPLAY'] = DISPLAY
 
+def debug_print(*args, **kwargs):
+    """Print only if DEBUG_PRINT is enabled"""
+    if DEBUG_PRINT:
+        print(*args, **kwargs)
+
 # Global variables for weather and sunrise/sunset
 outdoor_temp = None
 weather_code = None
@@ -62,9 +67,9 @@ def fetch_weather():
         data = response.json()
         outdoor_temp = data['current']['temperature_2m']
         weather_code = data['current']['weather_code']
-        print(f"Updated outdoor temperature: {outdoor_temp}°C, weather code: {weather_code}")
+        debug_print(f"Updated outdoor temperature: {outdoor_temp}°C, weather code: {weather_code}")
     except Exception as e:
-        print(f"Failed to fetch weather: {e}")
+        debug_print(f"Failed to fetch weather: {e}")
         outdoor_temp = None
         weather_code = None
 
@@ -84,9 +89,9 @@ def fetch_sunrise_sunset():
         sunrise_hour = int(sunrise_str.split('T')[1].split(':')[0])
         sunset_hour = int(sunset_str.split('T')[1].split(':')[0])
 
-        print(f"Updated sunrise: {sunrise_hour}:00, sunset: {sunset_hour}:00")
+        debug_print(f"Updated sunrise: {sunrise_hour}:00, sunset: {sunset_hour}:00")
     except Exception as e:
-        print(f"Failed to fetch sunrise/sunset: {e}")
+        debug_print(f"Failed to fetch sunrise/sunset: {e}")
         # Keep using the current values as fallback
 
 # Initialize sensor with error handling
@@ -105,7 +110,7 @@ try:
 
     sensor_available = True
 except OSError as e:
-    print(f"Failed to initialize temperature sensor: {e}")
+    debug_print(f"Failed to initialize temperature sensor: {e}")
     scd4x = None
     sensor_available = False
 
@@ -196,8 +201,8 @@ def update_air_data():
         temp_label.config(text="00°C")
         hum_label.config(text="00%")
         co2_label.config(text="0000ppm")
-        print(f"Temperature sensor error: {e}")
-    
+        debug_print(f"Temperature sensor error: {e}")
+
     root.after(TEMP_UPDATE_INTERVAL, update_air_data)
 
 def update_outdoor_temp():
