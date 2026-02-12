@@ -1,3 +1,2 @@
-dvb==1.4
 sensirion_i2c_driver==1.0.0
 sensirion_i2c_scd==0.1.2

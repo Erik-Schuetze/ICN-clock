@@ -7,7 +7,6 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
 from sensor_wrapper import I2cConnection, LinuxI2cTransceiver, Scd4xI2cDevice
-import dvb
 from config import *
 
 os.environ['DISPLAY'] = DISPLAY
@@ -32,43 +31,6 @@ except OSError as e:
     scd4x = None
     sensor_available = False
 
-departure_labels = []
-
-def update_departures():
-    # Clear existing labels
-    for label in departure_labels:
-        label.destroy()
-    departure_labels.clear()
-    
-    # Get new departures
-    departures = dvb.monitor(STATION, TIME_OFFSET, NUM_RESULTS, CITY)[:7]
-
-    # get current color scheme inside recurring function:
-    fg_color, bg_color = get_color_scheme()
-    
-    # Create new labels
-    y_offset = 70
-    line_spacing = 70
-    departure_font_size = 40
-    for dep in departures:
-        if dep['line'] in LINES_TO_SHOW:
-            # Create line and direction label
-            line_label = tk.Label(root, text=dep['line'], font=("Piboto Light", departure_font_size), bg=bg_color, fg=fg_color)
-            line_label.place(x=screen_width-440, y=y_offset, anchor="e")
-            departure_labels.append(line_label)
-            direction_label = tk.Label(root, text=dep['direction'], font=("Piboto Thin", departure_font_size-5), bg=bg_color, fg=fg_color)
-            direction_label.place(x=screen_width-425, y=y_offset, anchor="w")
-            departure_labels.append(direction_label)
-            
-            # Create arrival time label with different style
-            time_label = tk.Label(root, text=f"{dep['arrival']}m", font=("Piboto", departure_font_size), bg=bg_color, fg=fg_color)
-            time_label.place(x=screen_width-40, y=y_offset, anchor="e")
-            departure_labels.append(time_label)
-            
-            y_offset += line_spacing
-    
-    # Schedule next update
-    root.after(DEPARTURE_UPDATE_INTERVAL, update_departures)
 
 def create_date_labels():
     """Create and return labels for date display"""
@@ -180,8 +142,6 @@ def update_color_scheme():
     temp_label.configure(bg=bg_color, fg=fg_color)
     hum_label.configure(bg=bg_color, fg=fg_color)
     co2_label.configure(bg=bg_color, fg=fg_color)
-    for label in departure_labels:
-        label.configure(bg=bg_color, fg=fg_color)
     for key, label in date_labels.items():
         label.configure(bg=bg_color, fg=fg_color)
     root.after(900000, update_color_scheme)
@@ -246,7 +206,6 @@ co2_label = tk.Label(root, font=("Piboto Thin", 40), bg=bg_color, fg=fg_color)
 co2_label.place(x=screen_width/6*5.6-30, y=screen_height/5*4+50, anchor="center")
 
 update_clock()
-update_departures()
 update_air_data()
 update_color_scheme()
 root.mainloop()
