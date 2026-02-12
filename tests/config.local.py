@@ -7,12 +7,16 @@ FULLSCREEN = False  # Set to False for easier testing in windowed mode
 WINDOW_WIDTH = 1920
 WINDOW_HEIGHT = 720
 
-SUNSET = 22
-SUNRISE = 6
+# Location settings (used for weather and sunrise/sunset times)
+# Get your coordinates from: https://www.latlong.net/
+LATITUDE = 51.0504   # Dresden, Germany (adjust to your city)
+LONGITUDE = 13.7373  # Dresden, Germany (adjust to your city)
 
 # Mock mode for testing on non-Raspberry Pi systems
 MOCK_MODE = True  # Enable mock sensor data for local testing
 
-# Temperature and humidity sensor settings
-TEMP_UPDATE_INTERVAL = 5000
+# Update intervals (in milliseconds)
+TEMP_UPDATE_INTERVAL = 5000      # Indoor sensor update interval
+WEATHER_UPDATE_INTERVAL = 600000  # Outdoor weather update interval (10 minutes)
+SUNRISE_SUNSET_UPDATE_INTERVAL = 3600000  # Update sunrise/sunset every hour
 

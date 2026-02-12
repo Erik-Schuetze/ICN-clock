@@ -2,7 +2,9 @@
 
 ## Features
 - Large digital clock display with flashing colon
+- **Outdoor temperature** from Open-Meteo weather API (no API key required)
 - Temperature, humidity, and CO2 monitoring via Sensirion SCD4x sensor
+- **Automatic sunrise/sunset detection** based on your location
 - Day/night color scheme switching
 - Fullscreen display optimized for Raspberry Pi
 - **Mock mode for local testing on any PC/Mac**
@@ -124,14 +126,26 @@ Key settings in `config.py`:
 ```python
 MOCK_MODE = False        # Set to True for local testing
 FULLSCREEN = True        # Set to False for windowed mode
-SUNRISE = 6              # Hour when display switches to day mode
-SUNSET = 22              # Hour when display switches to night mode
+LATITUDE = 51.0504       # Your location latitude (for weather & sunrise/sunset)
+LONGITUDE = 13.7373      # Your location longitude
 ```
+
+**Getting your coordinates:**
+1. Visit https://www.latlong.net/
+2. Enter your city name
+3. Copy the latitude and longitude values to your config.py
 
 ## Dependencies
 - **tkinter** - GUI framework (included with Python)
+- **requests** - HTTP library for weather API calls
 - **sensirion-i2c-driver** - Real sensor (Raspberry Pi only, optional)
 - **sensirion-i2c-scd** - Real sensor (Raspberry Pi only, optional)
+
+## Weather Data
+Uses the free **Open-Meteo API** (https://open-meteo.com/) for:
+- Current outdoor temperature
+- Automatic sunrise and sunset times based on your location
+- No API key required!
 
 ## Display Requirements (Production)
 - Raspberry Pi with display
