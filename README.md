@@ -2,7 +2,6 @@
 
 ## Features
 - Large digital clock display with flashing colon
-- DVB departure times for Dresden public transport (tram lines configurable)
 - Temperature, humidity, and CO2 monitoring via Sensirion SCD4x sensor
 - Day/night color scheme switching
 - Fullscreen display optimized for Raspberry Pi
@@ -96,7 +95,7 @@ pip install -r requirements.txt
 3. Configure your settings:
 ```bash
 cp config.sample.py config.py
-# Edit config.py with your station, city, and preferences
+# Edit config.py with your preferences
 ```
 
 4. Run the application:
@@ -108,17 +107,12 @@ python3 main.py
 
 ### For Local Development (Mac/PC)
 
-1. Install basic dependencies:
-```bash
-pip install dvb
-```
-
-2. Copy the test config (already has MOCK_MODE enabled):
+1. Copy the test config (already has MOCK_MODE enabled):
 ```bash
 cp tests/config.local.py config.py
 ```
 
-3. Run tests:
+2. Run tests:
 ```bash
 python3 tests/demo_sensor.py
 ```
@@ -130,17 +124,12 @@ Key settings in `config.py`:
 ```python
 MOCK_MODE = False        # Set to True for local testing
 FULLSCREEN = True        # Set to False for windowed mode
-STATION = 'Your Station' # Transit station name
-CITY = 'Your City'       # City name for transit
-LINES_TO_SHOW = ['1']    # Transit lines to display
+SUNRISE = 6              # Hour when display switches to day mode
+SUNSET = 22              # Hour when display switches to night mode
 ```
-
-## Important Note
-The public transport feature only works in Dresden, Germany as it uses the [dvbpy library](https://github.com/offenesdresden/dvbpy) which is specific to Dresden's DVB (Dresdner Verkehrsbetriebe) system. To adapt this for other cities, you would need to implement a different transport API.
 
 ## Dependencies
 - **tkinter** - GUI framework (included with Python)
-- **dvbpy** - Dresden public transport API
 - **sensirion-i2c-driver** - Real sensor (Raspberry Pi only, optional)
 - **sensirion-i2c-scd** - Real sensor (Raspberry Pi only, optional)
 
@@ -151,4 +140,4 @@ The public transport feature only works in Dresden, Germany as it uses the [dvbp
 
 ## License & Credits
 
-This project uses the Dresden public transport API via [dvbpy](https://github.com/offenesdresden/dvbpy).
+This project displays environmental sensor data using the Sensirion SCD4x sensor.
