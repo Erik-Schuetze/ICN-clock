@@ -19,6 +19,6 @@ MOCK_MODE = False  # Set to True to use mock sensor data
 DEBUG_PRINT = True  # Enable/disable debug print statements
 
 # Update intervals (in milliseconds)
-TEMP_UPDATE_INTERVAL = 10000     # Indoor sensor update interval
+TEMP_UPDATE_INTERVAL = 10000     # Indoor sensor update interval, min 5 seconds for typical sensiron sensors
 WEATHER_UPDATE_INTERVAL = 600000  # Outdoor weather update interval (10 minutes)
 SUNRISE_SUNSET_UPDATE_INTERVAL = 3600000  # Update sunrise/sunset every hour

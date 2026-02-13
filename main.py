@@ -193,15 +193,30 @@ def update_air_data():
         return
 
     try:
+        # Check if data is ready before reading (SCD4x specific)
+        # The sensor measures every 5 seconds, only read when data is ready
+        if hasattr(scd4x, 'get_data_ready_status'):
+            data_ready = scd4x.get_data_ready_status()
+            if not data_ready:
+                debug_print("Sensor data not ready yet, skipping read")
+                root.after(TEMP_UPDATE_INTERVAL, update_air_data)
+                return
+
         co2, temp, rh = scd4x.read_measurement()
-        temp_label.config(text=f"{temp.degrees_celsius:.0f}°C")
-        hum_label.config(text=f"{rh.percent_rh:.0f}%")
-        co2_label.config(text=f"{co2.co2}ppm")
+
+        # Validate that we got valid data (not None)
+        if co2 is not None and temp is not None and rh is not None:
+            temp_label.config(text=f"{temp.degrees_celsius:.0f}°C")
+            hum_label.config(text=f"{rh.percent_rh:.0f}%")
+            co2_label.config(text=f"{co2.co2}ppm")
+            debug_print(f"Sensor reading: {temp.degrees_celsius:.1f}°C, {rh.percent_rh:.1f}%, {co2.co2}ppm")
+        else:
+            debug_print("Sensor returned None values, keeping previous display")
+
     except Exception as e:
-        temp_label.config(text="00°C")
-        hum_label.config(text="00%")
-        co2_label.config(text="0000ppm")
         debug_print(f"Temperature sensor error: {e}")
+        # Don't update display on error - keep showing last good value
+        # Only show zeros on complete failure
 
     root.after(TEMP_UPDATE_INTERVAL, update_air_data)
 

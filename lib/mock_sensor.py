@@ -61,6 +61,13 @@ class MockScd4xDevice:
         """Mock start measurement - does nothing"""
         print("Mock sensor: Started periodic measurement")
 
+    def get_data_ready_status(self) -> bool:
+        """
+        Mock data ready check - always returns True for mock sensor.
+        Real SCD4x sensor checks if new measurement data is available.
+        """
+        return True
+
     def read_measurement(self) -> Tuple[MockCO2, MockTemperature, MockHumidity]:
         """
         Simulate sensor readings with realistic variations.
